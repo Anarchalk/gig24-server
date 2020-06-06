@@ -36,7 +36,7 @@ empProfileRouter
   const {
     company_name,
     about_us,
-    logo,
+    //logo,
     email,
     phone,
     location,
@@ -47,7 +47,7 @@ empProfileRouter
   const newProfile = {
     company_name,
     about_us,
-    logo,
+    //logo,
     email,
     phone,
     location,
