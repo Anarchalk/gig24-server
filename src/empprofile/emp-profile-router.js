@@ -135,7 +135,7 @@ empProfileRouter
   const numberOfValues = Object.values(updatedProfile).filter(Boolean).length
   if(numberOfValues === 0){
       return res.status(400).json({
-          error: { message: `Request body must contain either name, about_me, photo, education, duration, location, imdb, skillset'`}
+          error: { message: `Request body must contain either company_name, about_us, logo, email, phone, location, fax, website, user_id`}
       });
   }
 

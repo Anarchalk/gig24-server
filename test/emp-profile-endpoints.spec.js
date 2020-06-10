@@ -3,7 +3,7 @@ const { TEST_DATABASE_URL } = require("../src/config");
 const { expect } = require("chai");
 const knex = require("knex");
 const app = require("../src/app");
-const { makeEmpProfileArray } = require('./emp-profile.fixtures');
+const { makeEmpProfileArray } = require("./emp-profile.fixtures");
 
 describe("Employer Profile Endpoints", function () {
   let db;
@@ -73,175 +73,167 @@ describe("Employer Profile Endpoints", function () {
         return db.into("emp_profile").insert(testEmpProfiles);
       });
       it("responds with 200 and all of the emp_profiles", () => {
-        return supertest(app).get("/api/empprofile").expect(200, testEmpProfiles);
+        return supertest(app)
+          .get("/api/empprofile")
+          .expect(200, testEmpProfiles);
         // TODO: add more assertions about the body
       });
     });
   });
 
-//   describe(`GET /jobs/:job_id`, () => {
-//     context(`Given no jobs`, () => {
-//       context(`Given an XSS attack article`, () => {
-//         const maliciousJob = {
-//           id: 911,
-//           position: "Key Grip",
-//           title:
-//             'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
-//           description: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
-//           type: "union",
-//           requirements: "Must drive",
-//           member: true,
-//           location: "1234 Atlantic Street",
-//           pay: "50",
-//           duration: "5",
-//           unit: "weeks",
-//           user_id: 1,
-//         };
-//         beforeEach("insert malicious job", () => {
-//           return db.into("jobs").insert([maliciousJob]);
-//         });
+  describe(`GET /empprofile/:id`, () => {
+    context(`Given no emp_profile`, () => {
+      context(`Given an XSS attack emp_profile`, () => {
+        const maliciousEmpPro = {
+          id: 666,
+          company_name:
+            'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
+          phone: "333-333-3333",
+          location: "Chicago, IL",
+          about_us: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+          email: "info@paramount.com",
+          fax: "666-666-6666",
+          website: "http://www.paramount.com",
+          user_id: 1,
+        };
+        beforeEach("insert malicious emp_profile", () => {
+          return db.into("emp_profile").insert([maliciousEmpPro]);
+        });
 
-//         it("removes XSS attack content", () => {
-//           return supertest(app)
-//             .get(`/api/jobs/${maliciousJob.id}`)
-//             .expect(200)
-//             .expect((res) => {
-//               expect(res.body.title).to.eql(
-//                 'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;'
-//               );
-//               expect(res.body.description).to.eql(
-//                 `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`
-//               );
-//             });
-//         });
-//       });
-//       it(`responds with 404`, () => {
-//         const jobId = 1234;
-//         return supertest(app)
-//           .get(`/api/jobs/${jobId}`)
-//           .expect(404, { error: { message: `Job doesn't exist` } });
-//       });
-//     });
-//     context("Given there are jobs in the database", () => {
-//       const testJobs = makeJobsArray();
+        it("removes XSS attack content", () => {
+          return supertest(app)
+            .get(`/api/empprofile/${maliciousEmpPro.id}`)
+            .expect(200)
+            .expect((res) => {
+              expect(res.body.company_name).to.eql(
+                'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;'
+              );
+              expect(res.body.about_us).to.eql(
+                `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`
+              );
+            });
+        });
+      });
+      it(`responds with 404`, () => {
+        const profileId = 1234;
+        return supertest(app)
+          .get(`/api/empprofile/${profileId}`)
+          .expect(404, {
+            error: { message: `Profile doesn't exist` },
+          });
+      });
+    });
+    context("Given there are emp_profiles in the database", () => {
+      const testEmpPros = makeEmpProfileArray();
 
-//       beforeEach("insert jobs", () => {
-//         return db.into("jobs").insert(testJobs);
-//       });
-//       it("It responds with 200 and the specified event", () => {
-//         const jobId = 2;
-//         const expectedJob = testJobs[jobId - 1];
-//         return supertest(app)
-//           .get(`/api/jobs/${jobId}`)
-//           .expect(200, expectedJob);
-//       });
-//     });
-//   });
-  
-//   describe(`POST /jobs`, () => {
-//     it(`It creates an job, responding with 201 and the new job`, function () {
-//       this.retries(3);
-//       const newJob = {
-//         position: "Key Grip",
-//         title:
-//           'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
-//         description: `Lorem ipsum dolor sit amet consectetur adipisius veniam consectetur tempora, corporis obcaectenetur, uamListicle`,
-//         type: "union",
-//         requirements: "Must drive",
-//         member: true,
-//         location: "1234 Atlantic Street",
-//         pay: "50",
-//         duration: "5",
-//         unit: "weeks",
-//         user_id: 1,
-//       };
-//       return supertest(app)
-//         .post("/api/jobs")
-//         .send(newJob)
-//         .expect(201)
-//         .expect((res) => {
-//           expect(res.body.postion).to.eql(newJob.postion);
-//           expect(res.body.title).to.eql(newJob.title);
-//           expect(res.body.description).to.eql(newJob.description);
-//           expect(res.body.type).to.eql(newJob.type);
-//           expect(res.body.requirements).to.eql(newJob.requirements);
-//           expect(res.body.member).to.eql(newJob.member);
-//           expect(res.body.location).to.eql(newJob.location);
-//           expect(res.body.pay).to.eql(newJob.pay);
-//           expect(res.body.duration).to.eql(newJob.duration);
-//           expect(res.body.unit).to.eql(newJob.unit);
-//           expect(res.body.user_id).to.eql(newJob.user_id);
-//           expect(res.body).to.have.property("id");
-//           expect(res.headers.location).to.eql(`/api/jobs/${res.body.id}`);
-//         })
-//         .then((jobRes) =>
-//           supertest(app).get(`/api/jobs/${jobRes.body.id}`).expect(jobRes.body)
-//         );
-//     });
-//     const requiredFields = [
-//       "position",
-//       "title",
-//       "description",
-//       "requirements",
-//       "type",
-//       "location",
-//       "pay",
-//       "duration",
-//       "unit",
-//       "user_id",
-//     ];
-//     requiredFields.forEach((field) => {
-//       const newJob = {
-//         position: "Key Grip",
-//         title:
-//           'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
-//         description: `Lorem ipsum dolor sit amet consectetur adipisius veniam consectetur tempora, corporis obcaectenetur, uamListicle`,
-//         type: "union",
-//         requirements: "Must drive",
-//         member: true,
-//         location: "1234 Atlantic Street",
-//         pay: "50",
-//         duration: "5",
-//         unit: "weeks",
-//         user_id: 1,
-//       };
-//       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
-//         delete newJob[field];
+      beforeEach("insert emp_profile", () => {
+        return db.into("emp_profile").insert(testEmpPros);
+      });
+      it("It responds with 200 and the specified event", () => {
+        const profileId = 2;
+        const expectedEmpPro = testEmpPros[profileId - 1];
+        return supertest(app)
+          .get(`/api/empprofile/${profileId}`)
+          .expect(200, expectedEmpPro);
+      });
+    });
+  });
 
-//         return supertest(app)
-//           .post("/api/jobs")
-//           .send(newJob)
-//           .expect(400, {
-//             error: { message: `Missing '${field}' in request body` },
-//           });
-//       });
-//     });
-//   });
+  describe(`POST /empprofile`, () => {
+    it(`It creates an emp_profile, responding with 201 and the new emp_profile`, function () {
+      this.retries(3);
+      const newEmpPro = {
+        company_name:
+          'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
+        phone: "333-333-3333",
+        location: "Chicago, IL",
+        about_us: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+        email: "info@paramount.com",
+        fax: "666-666-6666",
+        website: "http://www.paramount.com",
+        user_id: 1,
+      };
+      return supertest(app)
+        .post("/api/empprofile")
+        .send(newEmpPro)
+        .expect(201)
+        .expect((res) => {
+          expect(res.body.company_name).to.eql(newEmpPro.company_name);
+          expect(res.body.phone).to.eql(newEmpPro.phone);
+          expect(res.body.location).to.eql(newEmpPro.location);
+          expect(res.body.about_us).to.eql(newEmpPro.about_us);
+          expect(res.body.email).to.eql(newEmpPro.email);
+          expect(res.body.fax).to.eql(newEmpPro.fax);
+          expect(res.body.website).to.eql(newEmpPro.website);
+          expect(res.body.user_id).to.eql(newEmpPro.user_id);
+          expect(res.body).to.have.property("id");
+          expect(res.headers.location).to.eql(`/api/empprofile/${res.body.id}`);
+        })
+        .then((empProRes) =>
+          supertest(app)
+            .get(`/api/empprofile/${empProRes.body.id}`)
+            .expect(empProRes.body)
+        );
+    });
+    const requiredFields = [
+      'company_name',
+      'about_us',
+      'email',
+      'phone',
+      'location',
+      'fax',
+      'website',
+      'user_id',
+    ];
+    requiredFields.forEach((field) => {
+      const newEmpPro = {
+        company_name:
+          'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
+        about_us: `Lorem ipsum dolor sit amet consectetur adipisius veniam consectetur tempora, corporis obcaectenetur, uamListicle`,
+        email: "info@paramount.com",
+        phone: "333-333-3333",
+        location: "Chicago, IL",
+        fax:'666-666-6666',
+        website: "http://www.paramount.com",
+        user_id: 1,
+      };
+      it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+        delete newEmpPro[field];
 
-//   describe(`DELETE /api/jobs/:job_id`, () => {
-//     context(`Given no jobs`, () => {
-//       it(`responds with 404`, () => {
-//         const jobId = 1234;
-//         return supertest(app)
-//           .delete(`/api/jobs/${jobId}`)
-//           .expect(404, { error: { message: `Job doesn't exist` } });
-//       });
-//     });
-//     context("Given there are jobs in the database", () => {
-//       const testJobs = makeJobsArray();
+        return supertest(app)
+          .post("/api/empprofile")
+          .send(newEmpPro)
+          .expect(400, {
+            error: { message: `Missing '${field}' in request body` },
+          });
+      });
+    });
+  });
 
-//       beforeEach("insert jobs", () => {
-//         return db.into("jobs").insert(testJobs);
-//       });
+    describe(`DELETE /api/empprofile/:id`, () => {
+      context(`Given no emp_profile`, () => {
+        it(`responds with 404`, () => {
+          const profileId = 1234;
+          return supertest(app)
+            .delete(`/api/empprofile/${profileId}`)
+            .expect(404, { error: { message: `Profile doesn't exist` } });
+        });
+      });
+      context("Given there are employer profiles in the database", () => {
+        const testEmpPro = makeEmpProfileArray();
 
-//       it("responds with 204 and removes the job", () => {
-//         const idToRemove = 2;
-//         const expectedJobs = testJobs.filter((job) => job.id !== idToRemove);
-//         return supertest(app)
-//           .delete(`/api/jobs/${idToRemove}`)
-//           .expect(204)
-//           .then((res) => supertest(app).get(`/api/jobs`).expect(expectedJobs));
-//       });
-//     });
-//   });
- });
+        beforeEach("insert emp_profile", () => {
+          return db.into("emp_profile").insert(testEmpPro);
+        });
+
+        it("responds with 204 and removes the emp_profile", () => {
+          const idToRemove = 2;
+          const expectedEmpPro = testEmpPro.filter((emppro) => emppro.id !== idToRemove);
+          return supertest(app)
+            .delete(`/api/empprofile/${idToRemove}`)
+            .expect(204)
+            .then((res) => supertest(app).get(`/api/empprofile`).expect(expectedEmpPro));
+        });
+      });
+    });
+});

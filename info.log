@@ -1007,3 +1007,4 @@
 {"message":"role \"anars\" does not exist","level":"error"}
 {"message":"role \"anars\" does not exist","level":"error"}
 {"message":"role \"anars\" does not exist","level":"error"}
+{"message":"select * from \"jobs\" where \"id\" = $1 limit $2 - relation \"jobs\" does not exist","level":"error"}
