@@ -5,7 +5,7 @@ const UsersService = require("./users-service");
 const usersRouter = express.Router();
 const jsonParser = express.json();
 
-//serialize events in case of xss attack
+//serialize users in case of xss attack
 const serializeUser = (user) => ({
   id: user.id,
   fullname: xss(user.fullname),
@@ -35,7 +35,7 @@ usersRouter
     for (const [key, value] of Object.entries(newUser)) {
       if (value == null) {
         return res.status(400).json({
-          error: { message: `Missing '${key}' in request body'` },
+          error: { message: `Missing '${key}' in request body` },
         });
       }
     }

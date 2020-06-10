@@ -31,7 +31,7 @@ app.use('/api/empprofile', empProfileRouter);
 
 
 app.get("/", (req, res) => {
-  res.send("Hello, Heroku!");
+  res.send("Hello, world!");
 });
 
 
