@@ -1,6 +1,6 @@
 # GIG 24 App
 
- The GIG 24 is the one stop shop for PA and film production jobs. Search for gigs and submit your resume today! 
+ The GIG 24 is the one stop shop for Production Assistant and film production jobs. Search for gigs and submit your resume today! 
 
 
 * * *
