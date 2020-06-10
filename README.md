@@ -27,15 +27,17 @@ https://gig24-app.now.sh/
 
 ## FUNCTIONALITY
 
-The app uses GET requests to pull the events from the database. 
+The app uses GET requests to pull the jobs, applied jobs, users, user profiles, employer profiles from the database. 
 The app uses POST requests get sent to the database for:
+
   - Adding users 
-  - Creating a new event 
+  - Creating a new jobs 
   - Logging a user in 
-  - Creating a new user
-  - Joining event
-The app uses DELETE requests when user unjoin from the event. 
-The app uses PATCH requests when updating details of the event.
+  - Creating a new profiles
+  - Applying for new jobs
+ 
+The app uses DELETE requests when employer deletes their own job posts. 
+The app uses PATCH requests when updating details of the user and employer profiles.
 
 ***
 
@@ -47,67 +49,110 @@ Allows users to create accounts
   password: { type: String, required: true },
 
 
-EVENTS
-Allows users to create event with title, description, date and time, address and type of event.
+USER PROFILE
+Allows user- job seekers to create profile with name, about me, education, phone, IMDB credit, email, skillset, location.
 
+  name: { type: String, required: true },
+  about me: { type: String, required: true },
+  education: { type: String, required: true },
+  location: { type: String, required: true },
+  phone: { type: String, required: true },
+  email: { type: String, required: true },
+  IMDB credit: { type: String, required: false }
+  skillset: { type: String, required: true }
+
+***
+
+EMPLOYER PROFILE
+Allows user-employers to create profile with company name, about us, phone, fax, email, website, location.
+
+  company name: { type: String, required: true },
+  about us: { type: String, required: true },
+  fax: { type: String, required: true },
+  location: { type: String, required: true },
+  phone: { type: String, required: true },
+  email: { type: String, required: true },
+  website: { type: String, required: false }
+
+***
+
+EMPLOYER CREATE JOB POST
+Allows user-employers to create job post with position, title, type, requirements, description, member, location, pay, duration, unit.
+
+  position: { type: String, required: true },
   title: { type: String, required: true },
-  description: { type: String, required: true, unique: true },
-  address: { type: String, required: true },
   type: { type: String, required: true },
-  time_of_event: { type: String, required: true }
+  location: { type: String, required: true },
+  requirements: { type: String, required: true },
+  description: { type: String, required: true },
+  pay: { type: String, required: true },
+  duration: { type: String, required: true },
+  unit: { type: String, required: false },
+  member: { type: String, required: false }
 
 ***
 
 ## API Overview
 
-Events
+Jobs
 GET
 <blockquote>
-@route   GET api/events/
-@desc    Gets all events 
-@access  Public
-
-route.get('/', EventsService.getAllEvent);
-</blockquote>
-GET 
-
-@route   GET api/events/:id/
-@desc    Gets event by id
+@route   GET api/jobs/
+@desc    Gets all jobs 
 @access  Private
 
-route.get('/:id', EventsService.getEventById);
+route.get('/', JobsService.getAllJobs);
+</blockquote>
+
+GET 
+
+@route   GET api/gigs/:id/
+@desc    Gets job by id
+@access  Private
+
+route.get('/:id', JobsService.getGigs);
 
 PATCH
 
-@route   PATCH api/events/:id/
-@desc    Allows users to update event details
+@route   PATCH /api/userprofile/:id/
+@desc    Allows users to update user profile
 @access  Private
 
-router.patch('/:id, EventsService.updateEvent')
+router.patch('/:id, UserProfileService.updateProfile')
 
-Attend
+Jobs
 DELETE
 
-@route   Delete api/attend/
-@desc    Allows users to unjoin from event
+@route   Delete api/jobs/
+@desc    Allows employer to delete jobs that they posted
 @access  Private
 
-route.get('/:id', AttendService.deleteAttend);
+route.get('/:id',  JobsService.deleteJob);
+
 POST
 
-@route   POST api/attend/
-@desc    Allows users to join events
-@access  Private
+@route   POST api/login/
+@desc    Allows users to login
+@access  Public
 
-route.get
+route.get ('/login', AuthService.getUserWithUserName)
+
+POST
+
+@route   POST api/signup
+@desc    Allows users to signup
+@access  Public
+
+route.get ('/signup', UsersService.insertUser)
 
 Users
 POST
 
-@route   GET /api/users/signup
-@desc    Allows users to create account
-@access  Public
+@route   GET /api/applied
+@desc    Allows users to apply for jobs
+@access  Private
 
+route.get ('/applied', AppliedService.insertApplication)
 
 ***
 
