@@ -7,7 +7,7 @@
 
 ## LINK TO LIVE APP
 
-https://parent-connect-app.now.sh/
+https://gig24-app.now.sh/
 
 
 ***
@@ -15,6 +15,7 @@ https://parent-connect-app.now.sh/
 ## TECHNOLOGIES USED
 
 * Node
+* React
 * Express Framework
 * Bcrypt
 * Jwt Security
