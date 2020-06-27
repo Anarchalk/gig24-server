@@ -1,7 +1,6 @@
 # GIG 24 App
 
- The GIG 24 is the one stop shop for Production Assistant and film production jobs. Search for gigs and submit your resume today! There are private routes for job seekers and employers to create and edit profiles. Employers can post, delete gigs and view applicants  information. Job seekers can apply and see details of the open gigs as well as keep in track of applied jobs.   
-
+The GIG 24 is the one-stop-shop for Production Assistant and film production jobs. Search for gigs and submit your resume today! There are private routes for job seekers and employers to create and edit profiles. Employers can post, delete gigs, and view applicants' information. Job seekers can apply and see details of the open gigs as well as keep track of applied jobs.
 
 * * *
 
